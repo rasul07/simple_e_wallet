@@ -23,6 +23,7 @@ func NewAPI(walletService service.WalletService) *API {
 }
 
 func (api *API) setupRoutes() {
+	api.router.Use(AuthMiddleware())
 
 	handler := NewHandler(api.walletService)
 
