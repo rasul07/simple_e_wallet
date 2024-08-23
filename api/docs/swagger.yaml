@@ -4,7 +4,7 @@ definitions:
       amount:
         type: string
       wallet_id:
-        type: integer
+        type: string
     required:
     - amount
     - wallet_id
@@ -12,6 +12,30 @@ definitions:
 info:
   contact: {}
 paths:
+  /auth/digest:
+    post:
+      consumes:
+      - application/json
+      description: Generate digest for testing apis
+      parameters:
+      - description: Request Body
+        in: body
+        name: req_body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate digest
+      tags:
+      - auth
   /v1/wallet/balance:
     post:
       consumes:
@@ -22,7 +46,7 @@ paths:
         in: header
         name: X-UserId
         required: true
-        type: integer
+        type: string
       - description: Digest
         in: header
         name: X-Digest
@@ -33,7 +57,7 @@ paths:
         name: wallet_id
         required: true
         schema:
-          type: integer
+          type: string
       produces:
       - application/json
       responses:
@@ -56,7 +80,7 @@ paths:
         in: header
         name: X-UserId
         required: true
-        type: integer
+        type: string
       - description: Digest
         in: header
         name: X-Digest
@@ -67,7 +91,7 @@ paths:
         name: wallet_id
         required: true
         schema:
-          type: integer
+          type: string
       produces:
       - application/json
       responses:
@@ -90,7 +114,7 @@ paths:
         in: header
         name: X-UserId
         required: true
-        type: integer
+        type: string
       - description: Digest
         in: header
         name: X-Digest
@@ -125,7 +149,7 @@ paths:
         in: header
         name: X-UserId
         required: true
-        type: integer
+        type: string
       - description: Digest
         in: header
         name: X-Digest
@@ -136,7 +160,7 @@ paths:
         name: wallet_id
         required: true
         schema:
-          type: integer
+          type: string
       produces:
       - application/json
       responses:

@@ -15,6 +15,43 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/digest": {
+            "post": {
+                "description": "Generate digest for testing apis",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Generate digest",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "req_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/wallet/balance": {
             "post": {
                 "description": "Get the current balance of a wallet",
@@ -30,7 +67,7 @@ const docTemplate = `{
                 "summary": "Get wallet balance",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "X-UserId",
                         "in": "header",
@@ -49,7 +86,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -81,7 +118,7 @@ const docTemplate = `{
                 "summary": "Check if a wallet exists",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "X-UserId",
                         "in": "header",
@@ -100,7 +137,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -132,7 +169,7 @@ const docTemplate = `{
                 "summary": "Top up a wallet",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "X-UserId",
                         "in": "header",
@@ -183,7 +220,7 @@ const docTemplate = `{
                 "summary": "Get transactions for the current month",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "X-UserId",
                         "in": "header",
@@ -202,7 +239,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -230,7 +267,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "wallet_id": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         }

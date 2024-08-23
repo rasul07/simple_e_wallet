@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/pkg/errors"
 	"github.com/rasul07/alif-task/internal/models"
 	"github.com/rasul07/alif-task/internal/storage"
 )
 
 type WalletService interface {
-	CheckWalletExists(userID int) (bool, error)
-	TopUpWallet(userID int, amount string) error
-	GetTransactions(userID int) (int, string, error)
-	GetBalance(userID int) (string, error)
+	CheckWalletExists(walletID, userID string) (bool, error)
+	TopUpWallet(walletID, userID, amount string) error
+	GetTransactions(walletID, userID string) (int, string, error)
+	GetBalance(walletID, userID string) (string, error)
 }
 
 type walletService struct {
@@ -24,47 +25,41 @@ func NewWalletService(db *sql.DB) WalletService {
 	return &walletService{storage: storage.NewWalletStorage(db)}
 }
 
-func (s *walletService) CheckWalletExists(walletID int) (bool, error) {
-	return s.storage.CheckWalletExists(walletID)
+func (s *walletService) CheckWalletExists(walletID, userID string) (bool, error) {
+	return s.storage.CheckWalletExists(walletID, userID)
 }
 
-func (s *walletService) TopUpWallet(walletID int, amount string) error {
-	wallet, err := s.storage.GetWallet(walletID)
+func (s *walletService) TopUpWallet(walletID, userID, amount string) error {
+	wallet, err := s.storage.GetWallet(walletID, userID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Error getting wallet")
 	}
 
+	// Check if user is identified
 	isIdentified, err := s.storage.IsIdentified(wallet.UserID)
 	if err != nil {
 		return err
 	}
 
-	currentBalance, err := strconv.Atoi(wallet.Balance)
+	// Convert amount being added to numeric type
+	amountInt, err := strconv.ParseFloat(amount, 64)
 	if err != nil {
 		return err
 	}
 
-	amountInt, err := strconv.Atoi(amount)
-	if err != nil {
-		return err
-	}
-	
-	newBalance := int64(currentBalance) + int64(amountInt)
-	maxBalance := models.MaxBalanceUnidentified
+	newBalance := wallet.Balance + int64(amountInt)
+	maxBalance := models.MaxBalanceUnidentified // if user is not identified max balance is 10.000
 	if isIdentified {
+		// if user is identified max balance is 100.000
 		maxBalance = models.MaxBalanceIdentified
 	}
 
+	// Check possible balance overflow
 	if newBalance > int64(maxBalance) {
 		return fmt.Errorf("top-up would exceed maximum balance")
 	}
 
-	err = s.storage.UpdateWalletBalance(wallet.ID, newBalance)
-	if err != nil {
-		return err
-	}
-
-	err = s.storage.AddTransaction(wallet.ID, int64(amountInt))
+	err = s.storage.UpdateWalletBalance(wallet.ID, userID, newBalance, int64(amountInt))
 	if err != nil {
 		return err
 	}
@@ -72,24 +67,29 @@ func (s *walletService) TopUpWallet(walletID int, amount string) error {
 	return nil
 }
 
-func (s *walletService) GetTransactions(walletID int) (int, string, error) {
+func (s *walletService) GetTransactions(walletID, userID string) (int, string, error) {
+	_, err := s.storage.GetWallet(walletID, userID)
+	if err != nil {
+		return 0, "", errors.Wrap(err, "couldn't get this wallet")
+	}
+
 	trCount, total, err := s.storage.GetTransactions(walletID)
 	if err != nil {
 		return 0, "", err
 	}
 
-	totalStr := strconv.Itoa(int(total))
+	totalStr := fmt.Sprintf("%.2f", float64(total/100))
 
 	return trCount, totalStr, err
 }
 
-func (s *walletService) GetBalance(walletID int) (string, error) {
-	balance, err := s.storage.GetBalance(walletID)
+func (s *walletService) GetBalance(walletID, userID string) (string, error) {
+	balance, err := s.storage.GetBalance(walletID, userID)
 	if err != nil {
 		return "", err
 	}
 
-	balanceStr := strconv.Itoa(int(balance))
+	balanceStr := fmt.Sprintf("%.2f", float64(balance/100))
 
 	return balanceStr, err
 }

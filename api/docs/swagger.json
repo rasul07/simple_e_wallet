@@ -4,6 +4,43 @@
         "contact": {}
     },
     "paths": {
+        "/auth/digest": {
+            "post": {
+                "description": "Generate digest for testing apis",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Generate digest",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "req_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/wallet/balance": {
             "post": {
                 "description": "Get the current balance of a wallet",
@@ -19,7 +56,7 @@
                 "summary": "Get wallet balance",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "X-UserId",
                         "in": "header",
@@ -38,7 +75,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -70,7 +107,7 @@
                 "summary": "Check if a wallet exists",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "X-UserId",
                         "in": "header",
@@ -89,7 +126,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -121,7 +158,7 @@
                 "summary": "Top up a wallet",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "X-UserId",
                         "in": "header",
@@ -172,7 +209,7 @@
                 "summary": "Get transactions for the current month",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "X-UserId",
                         "in": "header",
@@ -191,7 +228,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -219,7 +256,7 @@
                     "type": "string"
                 },
                 "wallet_id": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         }

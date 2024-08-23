@@ -35,7 +35,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
 
 		// Compute the HMAC of the request body
-		computedDigest := computeHMAC(body)
+		computedDigest := ComputeHMAC(body)
 		if digest != computedDigest {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
@@ -47,7 +47,7 @@ func AuthMiddleware() gin.HandlerFunc {
 }
 
 // computeHMAC computes the HMAC-SHA1 hash of a message
-func computeHMAC(message []byte) string {
+func ComputeHMAC(message []byte) string {
 	key := []byte("secret")
 	h := hmac.New(sha1.New, key)
 	h.Write(message)

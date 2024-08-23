@@ -1,25 +1,14 @@
 package models
 
-import (
-	"time"
-)
-
 type Wallet struct {
-	ID      int64      `json:"id"`
-	UserID  int     `json:"user_id"`
-	Balance string    `json:"balance"`
-}
-
-type Transaction struct {
-	ID        int64     `json:"id"`
-	WalletID  int64     `json:"wallet_id"`
-	Amount    string   `json:"amount"`
-	Timestamp time.Time `json:"timestamp"`
+	ID      string `db:"id"`
+	UserID  string `db:"user_id"`
+	Balance int64 `db:"balance"`
 }
 
 type TopUpRequest struct {
-	WalletID int  `json:"wallet_id" binding:"required"`
-	Amount string `json:"amount" binding:"required"`
+	WalletID string `json:"wallet_id" binding:"required"`
+	Amount   string `json:"amount" binding:"required"`
 }
 
 const (

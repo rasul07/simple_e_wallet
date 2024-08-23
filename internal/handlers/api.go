@@ -42,6 +42,9 @@ func (api *API) setupRoutes() {
 		v1.POST("/wallet/transactions", handler.GetTransactions)
 		v1.POST("/wallet/balance", handler.GetBalance)
 	}
+	{
+		api.router.POST("/auth/digest", handler.GenerateDigest)
+	}
 
 	url := ginSwagger.URL("swagger/doc.json")
 	api.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

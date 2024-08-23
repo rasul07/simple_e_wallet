@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,26 +17,44 @@ func NewHandler(walletService service.WalletService) *Handler {
 	return &Handler{walletService: walletService}
 }
 
+// GenerateDigest godoc
+// @Summary Generate digest
+// @Description Generate digest for testing apis
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param req_body body interface{} true "Request Body"
+// @Success 200 {object} map[string]string
+// @Router /auth/digest [post]
+func (h *Handler) GenerateDigest(c *gin.Context) {
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't read the request body"})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"digest": ComputeHMAC(body)})
+}
+
 // CheckWalletExists godoc
 // @Summary Check if a wallet exists
 // @Description Check if a wallet exists for the given wallet ID
 // @Tags wallet
 // @Accept json
 // @Produce json
-// @Param X-UserId header int true "User ID"
+// @Param X-UserId header string true "User ID"
 // @Param X-Digest header string true "Digest"
-// @Param wallet_id body int true "Wallet ID"
+// @Param wallet_id body string true "Wallet ID"
 // @Success 200 {object} map[string]bool
 // @Router /v1/wallet/check [post]
 func (h *Handler) CheckWalletExists(c *gin.Context) {
-	var walletID int
+	var walletID string
 
 	if err := c.ShouldBindJSON(&walletID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	exists, err := h.walletService.CheckWalletExists(walletID)
+	exists, err := h.walletService.CheckWalletExists(walletID, c.GetHeader("X-UserId"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error checking wallet"})
 		return
@@ -50,7 +69,7 @@ func (h *Handler) CheckWalletExists(c *gin.Context) {
 // @Tags wallet
 // @Accept json
 // @Produce json
-// @Param X-UserId header int true "User ID"
+// @Param X-UserId header string true "User ID"
 // @Param X-Digest header string true "Digest"
 // @Param request body models.TopUpRequest true "Top up request"
 // @Success 200 {object} map[string]string
@@ -63,7 +82,7 @@ func (h *Handler) TopUpWallet(c *gin.Context) {
 		return
 	}
 
-	if err := h.walletService.TopUpWallet(request.WalletID, request.Amount); err != nil {
+	if err := h.walletService.TopUpWallet(request.WalletID, c.GetHeader("X-UserId"), request.Amount); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -77,22 +96,22 @@ func (h *Handler) TopUpWallet(c *gin.Context) {
 // @Tags wallet
 // @Accept json
 // @Produce json
-// @Param X-UserId header int true "User ID"
+// @Param X-UserId header string true "User ID"
 // @Param X-Digest header string true "Digest"
-// @Param wallet_id body int true "Wallet ID"
+// @Param wallet_id body string true "Wallet ID"
 // @Success 200 {object} map[string]interface{}
 // @Router /v1/wallet/transactions [post]
 func (h *Handler) GetTransactions(c *gin.Context) {
-	var walletID int
+	var walletID string
 
 	if err := c.ShouldBindJSON(&walletID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	count, total, err := h.walletService.GetTransactions(walletID)
+	count, total, err := h.walletService.GetTransactions(walletID, c.GetHeader("X-UserId"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting transactions"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -108,20 +127,20 @@ func (h *Handler) GetTransactions(c *gin.Context) {
 // @Tags wallet
 // @Accept json
 // @Produce json
-// @Param X-UserId header int true "User ID"
+// @Param X-UserId header string true "User ID"
 // @Param X-Digest header string true "Digest"
-// @Param wallet_id body int true "Wallet ID"
+// @Param wallet_id body string true "Wallet ID"
 // @Success 200 {object} map[string]float64
 // @Router /v1/wallet/balance [post]
 func (h *Handler) GetBalance(c *gin.Context) {
-	var walletID int
+	var walletID string
 
 	if err := c.ShouldBindJSON(&walletID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	balance, err := h.walletService.GetBalance(walletID)
+	balance, err := h.walletService.GetBalance(walletID, c.GetHeader("X-UserId"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting balance"})
 		return
