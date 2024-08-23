@@ -1,0 +1,151 @@
+definitions:
+  models.TopUpRequest:
+    properties:
+      amount:
+        type: string
+      wallet_id:
+        type: integer
+    required:
+    - amount
+    - wallet_id
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/wallet/balance:
+    post:
+      consumes:
+      - application/json
+      description: Get the current balance of a wallet
+      parameters:
+      - description: User ID
+        in: header
+        name: X-UserId
+        required: true
+        type: integer
+      - description: Digest
+        in: header
+        name: X-Digest
+        required: true
+        type: string
+      - description: Wallet ID
+        in: body
+        name: wallet_id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: number
+            type: object
+      summary: Get wallet balance
+      tags:
+      - wallet
+  /v1/wallet/check:
+    post:
+      consumes:
+      - application/json
+      description: Check if a wallet exists for the given wallet ID
+      parameters:
+      - description: User ID
+        in: header
+        name: X-UserId
+        required: true
+        type: integer
+      - description: Digest
+        in: header
+        name: X-Digest
+        required: true
+        type: string
+      - description: Wallet ID
+        in: body
+        name: wallet_id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Check if a wallet exists
+      tags:
+      - wallet
+  /v1/wallet/topup:
+    post:
+      consumes:
+      - application/json
+      description: Top up a wallet with the given amount
+      parameters:
+      - description: User ID
+        in: header
+        name: X-UserId
+        required: true
+        type: integer
+      - description: Digest
+        in: header
+        name: X-Digest
+        required: true
+        type: string
+      - description: Top up request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.TopUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Top up a wallet
+      tags:
+      - wallet
+  /v1/wallet/transactions:
+    post:
+      consumes:
+      - application/json
+      description: Get the total number and amount of transactions for the current
+        month
+      parameters:
+      - description: User ID
+        in: header
+        name: X-UserId
+        required: true
+        type: integer
+      - description: Digest
+        in: header
+        name: X-Digest
+        required: true
+        type: string
+      - description: Wallet ID
+        in: body
+        name: wallet_id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get transactions for the current month
+      tags:
+      - wallet
+swagger: "2.0"

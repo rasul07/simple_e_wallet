@@ -15,15 +15,15 @@ func NewWalletStorage(db *sql.DB) *WalletStorage {
 	return &WalletStorage{db: db}
 }
 
-func (s *WalletStorage) CheckWalletExists(userID string) (bool, error) {
+func (s *WalletStorage) CheckWalletExists(walletID int) (bool, error) {
 	var exists bool
-	err := s.db.QueryRow("SELECT EXISTS(SELECT 1 FROM wallets WHERE user_id=$1)", userID).Scan(&exists)
+	err := s.db.QueryRow("SELECT EXISTS(SELECT 1 FROM wallets WHERE id=$1)", walletID).Scan(&exists)
 	return exists, err
 }
 
-func (s *WalletStorage) GetWallet(userID string) (*models.Wallet, error) {
+func (s *WalletStorage) GetWallet(walletID int) (*models.Wallet, error) {
 	wallet := &models.Wallet{}
-	err := s.db.QueryRow("SELECT id, user_id, balance FROM wallets WHERE user_id=$1", userID).Scan(&wallet.ID, &wallet.UserID, &wallet.Balance)
+	err := s.db.QueryRow("SELECT id, user_id, balance FROM wallets WHERE id=$1", walletID).Scan(&wallet.ID, &wallet.UserID, &wallet.Balance)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *WalletStorage) AddTransaction(walletID int64, amount int64) error {
 	return err
 }
 
-func (s *WalletStorage) GetTransactions(userID string) (int, int64, error) {
+func (s *WalletStorage) GetTransactions(walletID int) (int, int64, error) {
 	var count int
 	var total int64
 
@@ -48,19 +48,19 @@ func (s *WalletStorage) GetTransactions(userID string) (int, int64, error) {
 		SELECT COUNT(*), COALESCE(SUM(t.amount), 0)
 		FROM transactions t
 		JOIN wallets w ON t.wallet_id = w.id
-		WHERE w.user_id=$1 AND t.timestamp >= DATE_TRUNC('month', CURRENT_DATE)
-	`, userID).Scan(&count, &total)
+		WHERE w.id=$1 AND t.timestamp >= DATE_TRUNC('month', CURRENT_DATE)
+	`, walletID).Scan(&count, &total)
 
 	return count, total, err
 }
 
-func (s *WalletStorage) GetBalance(userID string) (int64, error) {
+func (s *WalletStorage) GetBalance(walletID int) (int64, error) {
 	var balance int64
-	err := s.db.QueryRow("SELECT balance FROM wallets WHERE user_id=$1", userID).Scan(&balance)
+	err := s.db.QueryRow("SELECT balance FROM wallets WHERE id=$1", walletID).Scan(&balance)
 	return balance, err
 }
 
-func (s *WalletStorage) IsIdentified(userID string) (bool, error) {
+func (s *WalletStorage) IsIdentified(userID int) (bool, error) {
 	var identified bool
 	err := s.db.QueryRow("SELECT is_identified FROM users WHERE id=$1", userID).Scan(&identified)
 	return identified, err

@@ -6,7 +6,7 @@ import (
 
 type Wallet struct {
 	ID      int64      `json:"id"`
-	UserID  string     `json:"user_id"`
+	UserID  int     `json:"user_id"`
 	Balance string    `json:"balance"`
 }
 
@@ -15,6 +15,11 @@ type Transaction struct {
 	WalletID  int64     `json:"wallet_id"`
 	Amount    string   `json:"amount"`
 	Timestamp time.Time `json:"timestamp"`
+}
+
+type TopUpRequest struct {
+	WalletID int  `json:"wallet_id" binding:"required"`
+	Amount string `json:"amount" binding:"required"`
 }
 
 const (

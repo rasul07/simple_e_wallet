@@ -10,10 +10,10 @@ import (
 )
 
 type WalletService interface {
-	CheckWalletExists(userID string) (bool, error)
-	TopUpWallet(userID string, amount string) error
-	GetTransactions(userID string) (int, string, error)
-	GetBalance(userID string) (string, error)
+	CheckWalletExists(userID int) (bool, error)
+	TopUpWallet(userID int, amount string) error
+	GetTransactions(userID int) (int, string, error)
+	GetBalance(userID int) (string, error)
 }
 
 type walletService struct {
@@ -24,17 +24,17 @@ func NewWalletService(db *sql.DB) WalletService {
 	return &walletService{storage: storage.NewWalletStorage(db)}
 }
 
-func (s *walletService) CheckWalletExists(userID string) (bool, error) {
-	return s.storage.CheckWalletExists(userID)
+func (s *walletService) CheckWalletExists(walletID int) (bool, error) {
+	return s.storage.CheckWalletExists(walletID)
 }
 
-func (s *walletService) TopUpWallet(userID string, amount string) error {
-	wallet, err := s.storage.GetWallet(userID)
+func (s *walletService) TopUpWallet(walletID int, amount string) error {
+	wallet, err := s.storage.GetWallet(walletID)
 	if err != nil {
 		return err
 	}
 
-	isIdentified, err := s.storage.IsIdentified(userID)
+	isIdentified, err := s.storage.IsIdentified(wallet.UserID)
 	if err != nil {
 		return err
 	}
@@ -72,8 +72,8 @@ func (s *walletService) TopUpWallet(userID string, amount string) error {
 	return nil
 }
 
-func (s *walletService) GetTransactions(userID string) (int, string, error) {
-	trCount, total, err := s.storage.GetTransactions(userID)
+func (s *walletService) GetTransactions(walletID int) (int, string, error) {
+	trCount, total, err := s.storage.GetTransactions(walletID)
 	if err != nil {
 		return 0, "", err
 	}
@@ -83,8 +83,8 @@ func (s *walletService) GetTransactions(userID string) (int, string, error) {
 	return trCount, totalStr, err
 }
 
-func (s *walletService) GetBalance(userID string) (string, error) {
-	balance, err := s.storage.GetBalance(userID)
+func (s *walletService) GetBalance(walletID int) (string, error) {
+	balance, err := s.storage.GetBalance(walletID)
 	if err != nil {
 		return "", err
 	}

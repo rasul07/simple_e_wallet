@@ -48,6 +48,8 @@ func AuthMiddleware() gin.HandlerFunc {
 
 // computeHMAC computes the HMAC-SHA1 hash of a message
 func computeHMAC(message []byte) string {
-	h := hmac.New(sha1.New, message)
+	key := []byte("secret")
+	h := hmac.New(sha1.New, key)
+	h.Write(message)
 	return hex.EncodeToString(h.Sum(nil))
 }
