@@ -23,17 +23,17 @@ CREATE TABLE IF NOT EXISTS transactions (
 );
 
 -- Insert sample data
-INSERT INTO users (is_identified) VALUES
-(FALSE),
-(TRUE),
-(FALSE),
-(TRUE);
+INSERT INTO users (id, is_identified) VALUES
+('7a9abd33-7b21-482c-8c3b-d256e711170e', FALSE),
+('d3211ea3-fdc1-4625-8f1d-a6fa40f9f4ce', TRUE),
+('a29cfe7e-d2dd-4c96-826c-c94d96569fe5', FALSE),
+('3ee68254-1f2a-4d9a-b6f5-09d27ee43445', TRUE);
 
-INSERT INTO wallets (user_id, balance) VALUES
-('7a9abd33-7b21-482c-8c3b-d256e711170e', 500000),
-('d3211ea3-fdc1-4625-8f1d-a6fa40f9f4ce', 300000),
-('a29cfe7e-d2dd-4c96-826c-c94d96569fe5', 800000),
-('3ee68254-1f2a-4d9a-b6f5-09d27ee43445', 0);
+INSERT INTO wallets (id, user_id, balance) VALUES
+('9e323a19-73bf-4600-a049-7397dcea5751', '7a9abd33-7b21-482c-8c3b-d256e711170e', 500000),
+('4aa3e422-eff1-46de-adab-8ea0c3893fe7', 'd3211ea3-fdc1-4625-8f1d-a6fa40f9f4ce', 300000),
+('4f09c559-5ab1-427f-bb51-8455bae3a067', 'a29cfe7e-d2dd-4c96-826c-c94d96569fe5', 800000),
+('296d6485-f51c-4d8b-83e0-d9785bb8c155', '3ee68254-1f2a-4d9a-b6f5-09d27ee43445', 0);
 
 INSERT INTO transactions (wallet_id, amount, created_at) VALUES
 ('9e323a19-73bf-4600-a049-7397dcea5751', 100000, CURRENT_TIMESTAMP - INTERVAL '5 days'),
