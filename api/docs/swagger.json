@@ -23,9 +23,7 @@
                         "name": "req_body",
                         "in": "body",
                         "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
+                        "schema": {}
                     }
                 ],
                 "responses": {
@@ -71,11 +69,11 @@
                     },
                     {
                         "description": "Wallet ID",
-                        "name": "wallet_id",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.RequestModel"
                         }
                     }
                 ],
@@ -122,11 +120,11 @@
                     },
                     {
                         "description": "Wallet ID",
-                        "name": "wallet_id",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.RequestModel"
                         }
                     }
                 ],
@@ -224,11 +222,11 @@
                     },
                     {
                         "description": "Wallet ID",
-                        "name": "wallet_id",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.RequestModel"
                         }
                     }
                 ],
@@ -245,6 +243,17 @@
         }
     },
     "definitions": {
+        "models.RequestModel": {
+            "type": "object",
+            "required": [
+                "wallet_id"
+            ],
+            "properties": {
+                "wallet_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.TopUpRequest": {
             "type": "object",
             "required": [

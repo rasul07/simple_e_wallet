@@ -1,4 +1,11 @@
 definitions:
+  models.RequestModel:
+    properties:
+      wallet_id:
+        type: string
+    required:
+    - wallet_id
+    type: object
   models.TopUpRequest:
     properties:
       amount:
@@ -22,8 +29,7 @@ paths:
         in: body
         name: req_body
         required: true
-        schema:
-          type: object
+        schema: {}
       produces:
       - application/json
       responses:
@@ -54,10 +60,10 @@ paths:
         type: string
       - description: Wallet ID
         in: body
-        name: wallet_id
+        name: request
         required: true
         schema:
-          type: string
+          $ref: '#/definitions/models.RequestModel'
       produces:
       - application/json
       responses:
@@ -88,10 +94,10 @@ paths:
         type: string
       - description: Wallet ID
         in: body
-        name: wallet_id
+        name: request
         required: true
         schema:
-          type: string
+          $ref: '#/definitions/models.RequestModel'
       produces:
       - application/json
       responses:
@@ -157,10 +163,10 @@ paths:
         type: string
       - description: Wallet ID
         in: body
-        name: wallet_id
+        name: request
         required: true
         schema:
-          type: string
+          $ref: '#/definitions/models.RequestModel'
       produces:
       - application/json
       responses:

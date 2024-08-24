@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: ewallet
+      DB_SSL_MODE: false
+
+  postgres:
+    image: bitnami/postgresql:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ewallet
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  
+  goose:
+    image: artsafin/goose-migrations:latest
+    volumes:
+      - ./migrations:/migrations
+    environment:
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: ewallet
+      DB_SSL_MODE: false
+    depends_on:
+      - postgres
+    command: postgres "host=postgres port=5432 user=postgres password=postgres dbname=ewallet sslmode=disable" up
+
+volumes:
+  pgdata:

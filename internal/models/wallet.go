@@ -11,6 +11,12 @@ type TopUpRequest struct {
 	Amount   string `json:"amount" binding:"required"`
 }
 
+type DigestRequest interface{}
+
+type RequestModel struct {
+	WalletID string `json:"wallet_id" binding:"required"`
+}
+
 const (
 	MaxBalanceUnidentified = 1000000
 	MaxBalanceIdentified   = 10000000

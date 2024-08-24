@@ -34,9 +34,7 @@ const docTemplate = `{
                         "name": "req_body",
                         "in": "body",
                         "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
+                        "schema": {}
                     }
                 ],
                 "responses": {
@@ -82,11 +80,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "Wallet ID",
-                        "name": "wallet_id",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.RequestModel"
                         }
                     }
                 ],
@@ -133,11 +131,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "Wallet ID",
-                        "name": "wallet_id",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.RequestModel"
                         }
                     }
                 ],
@@ -235,11 +233,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "Wallet ID",
-                        "name": "wallet_id",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.RequestModel"
                         }
                     }
                 ],
@@ -256,6 +254,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.RequestModel": {
+            "type": "object",
+            "required": [
+                "wallet_id"
+            ],
+            "properties": {
+                "wallet_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.TopUpRequest": {
             "type": "object",
             "required": [

@@ -1,3 +1,5 @@
+-- +goose Up
+
 -- Create wallets table
 CREATE TABLE users (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -38,3 +40,8 @@ INSERT INTO transactions (wallet_id, amount, created_at) VALUES
 ('9e323a19-73bf-4600-a049-7397dcea5751', 200000, CURRENT_TIMESTAMP - INTERVAL '3 days'),
 ('4aa3e422-eff1-46de-adab-8ea0c3893fe7', 150000, CURRENT_TIMESTAMP - INTERVAL '2 days'),
 ('4f09c559-5ab1-427f-bb51-8455bae3a067', 300000, CURRENT_TIMESTAMP - INTERVAL '1 day');
+
+-- +goose Down
+drop table transactions;
+drop table wallets;
+drop table users;

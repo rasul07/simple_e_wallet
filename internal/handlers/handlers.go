@@ -23,7 +23,7 @@ func NewHandler(walletService service.WalletService) *Handler {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param req_body body interface{} true "Request Body"
+// @Param req_body body models.DigestRequest true "Request Body"
 // @Success 200 {object} map[string]string
 // @Router /auth/digest [post]
 func (h *Handler) GenerateDigest(c *gin.Context) {
@@ -43,18 +43,18 @@ func (h *Handler) GenerateDigest(c *gin.Context) {
 // @Produce json
 // @Param X-UserId header string true "User ID"
 // @Param X-Digest header string true "Digest"
-// @Param wallet_id body string true "Wallet ID"
+// @Param request body models.RequestModel true "Wallet ID"
 // @Success 200 {object} map[string]bool
 // @Router /v1/wallet/check [post]
 func (h *Handler) CheckWalletExists(c *gin.Context) {
-	var walletID string
+	var req models.RequestModel
 
-	if err := c.ShouldBindJSON(&walletID); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	exists, err := h.walletService.CheckWalletExists(walletID, c.GetHeader("X-UserId"))
+	exists, err := h.walletService.CheckWalletExists(req.WalletID, c.GetHeader("X-UserId"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error checking wallet"})
 		return
@@ -98,18 +98,18 @@ func (h *Handler) TopUpWallet(c *gin.Context) {
 // @Produce json
 // @Param X-UserId header string true "User ID"
 // @Param X-Digest header string true "Digest"
-// @Param wallet_id body string true "Wallet ID"
+// @Param request body models.RequestModel true "Wallet ID"
 // @Success 200 {object} map[string]interface{}
 // @Router /v1/wallet/transactions [post]
 func (h *Handler) GetTransactions(c *gin.Context) {
-	var walletID string
+	var req models.RequestModel
 
-	if err := c.ShouldBindJSON(&walletID); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	count, total, err := h.walletService.GetTransactions(walletID, c.GetHeader("X-UserId"))
+	count, total, err := h.walletService.GetTransactions(req.WalletID, c.GetHeader("X-UserId"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -129,18 +129,18 @@ func (h *Handler) GetTransactions(c *gin.Context) {
 // @Produce json
 // @Param X-UserId header string true "User ID"
 // @Param X-Digest header string true "Digest"
-// @Param wallet_id body string true "Wallet ID"
+// @Param request body models.RequestModel true "Wallet ID"
 // @Success 200 {object} map[string]float64
 // @Router /v1/wallet/balance [post]
 func (h *Handler) GetBalance(c *gin.Context) {
-	var walletID string
+	var req models.RequestModel
 
-	if err := c.ShouldBindJSON(&walletID); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	balance, err := h.walletService.GetBalance(walletID, c.GetHeader("X-UserId"))
+	balance, err := h.walletService.GetBalance(req.WalletID, c.GetHeader("X-UserId"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting balance"})
 		return
