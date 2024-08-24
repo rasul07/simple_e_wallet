@@ -32,7 +32,7 @@ func (h *Handler) GenerateDigest(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't read the request body"})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"digest": ComputeHMAC(body)})
+	c.JSON(http.StatusOK, gin.H{"digest": computeHMAC(body)})
 }
 
 // CheckWalletExists godoc

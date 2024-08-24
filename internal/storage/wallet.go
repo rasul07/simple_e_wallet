@@ -9,6 +9,15 @@ import (
 	"github.com/rasul07/alif-task/internal/models"
 )
 
+type WalletStorager interface {
+	CheckWalletExists(walletID, userID string) (bool, error)
+	GetWallet(walletID, userID string) (*models.Wallet, error)
+	UpdateWalletBalance(walletID, userID string, newBalance, amount int64) error
+	GetTransactions(walletID string) (int, int64, error)
+	GetBalance(walletID, userID string) (int64, error)
+	IsIdentified(userID string) (bool, error)
+}
+
 type WalletStorage struct {
 	db *sql.DB
 }
