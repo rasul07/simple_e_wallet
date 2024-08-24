@@ -1,12 +1,12 @@
 -- +goose Up
 
 -- Create wallets table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     is_identified BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE wallets (
+CREATE TABLE IF NOT EXISTS wallets (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id uuid NOT NULL,
     balance BIGINT NOT NULL DEFAULT 0,
@@ -14,7 +14,7 @@ CREATE TABLE wallets (
 );
 
 -- Create transactions table
-CREATE TABLE transactions (
+CREATE TABLE IF NOT EXISTS transactions (
     id SERIAL PRIMARY KEY,
     wallet_id uuid NOT NULL,
     amount BIGINT NOT NULL,
